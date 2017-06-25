@@ -5,80 +5,104 @@ import (
 	"github.com/jroimartin/gocui"
 )
 
+var symafore = make(chan struct{}, 1)
+
 // Получить следующие цитаты
 func nextQuote(g *gocui.Gui, v *gocui.View) error {
-	v.Clear()
-
-	config.Cit += config.Cnt
-
-	str, err := readBashorg(config.Cit, config.Cnt)
-	v.Clear()
+	iv, err := g.View("info")
 	if err != nil {
-		fmt.Fprintf(v, "%s", err)
 		return err
-	} else {
-		fmt.Fprintf(v, "%s", str)
 	}
 
-	iv, _ := g.View("info")
 	iv.Clear()
 
-	fmt.Fprintf(iv, "%s", "Готово!")
+	fmt.Fprintf(iv, "%s", "Загрузка цитат!!!")
 
-	return nil
-}
+	go g.Execute(func(g *gocui.Gui) error {
+		defer func() { <-symafore }()
+		symafore <- struct{}{}
 
-func nextQuoteInfo(g *gocui.Gui, v *gocui.View) error {
-	iv, _ := g.View("info")
+		v, err := g.View("main")
+		if err != nil {
+			return err
+		}
+		iv, err := g.View("info")
+		if err != nil {
+			return err
+		}
 
-	iv.Clear()
+		v.Clear()
+		iv.Clear()
 
-	yopt := "Загрузка цитат!!!"
+		config.Cit += config.Cnt
 
-	fmt.Fprintf(iv, "%s", yopt)
+		str, err := readBashorg(config.Cit, config.Cnt)
+		v.Clear()
+		if err != nil {
+			fmt.Fprintf(v, "%s", err)
+			return err
+		} else {
+			fmt.Fprintf(v, "%s", str)
+		}
 
-	// g.Flush()
+		iv.Clear()
+
+		fmt.Fprintf(iv, "%s", "Готово!")
+
+		return nil
+	})
 
 	return nil
 }
 
 // Предыдущие цитаты
 func prevQuote(g *gocui.Gui, v *gocui.View) error {
-	v.Clear()
-
-	if config.Cit-config.Cnt < 0 {
-		config.Cit = 1
-	} else {
-		config.Cit -= config.Cnt
-	}
-
-	str, err := readBashorg(config.Cit, config.Cnt)
-	v.Clear()
+	iv, err := g.View("info")
 	if err != nil {
-		fmt.Fprintf(v, "%s", err)
 		return err
-	} else {
-		fmt.Fprintf(v, "%s", str)
 	}
 
-	iv, _ := g.View("info")
 	iv.Clear()
 
-	fmt.Fprintf(iv, "%s", "Готово!")
+	fmt.Fprintf(iv, "%s", "Загрузка цитат!!!")
 
-	return nil
-}
+	go g.Execute(func(g *gocui.Gui) error {
+		defer func() { <-symafore }()
+		symafore <- struct{}{}
 
-func prevQuoteInfo(g *gocui.Gui, v *gocui.View) error {
-	iv, _ := g.View("info")
+		v, err := g.View("main")
+		if err != nil {
+			return err
+		}
+		iv, err := g.View("info")
+		if err != nil {
+			return err
+		}
 
-	iv.Clear()
+		v.Clear()
+		iv.Clear()
 
-	yopt := "Загрузка цитат!!!"
+		if config.Cit-config.Cnt < 0 {
+			config.Cit = 1
+		} else {
+			config.Cit -= config.Cnt
+		}
 
-	fmt.Fprintf(iv, "%s", yopt)
+		str, err := readBashorg(config.Cit, config.Cnt)
+		v.Clear()
+		if err != nil {
+			fmt.Fprintf(v, "%s", err)
+			return err
+		} else {
+			fmt.Fprintf(v, "%s", str)
+		}
 
-	// g.Flush()
+		iv.Clear()
+
+		fmt.Fprintf(iv, "%s", "Готово!")
+
+		return nil
+	})
 
 	return nil
 }
@@ -95,19 +119,11 @@ func keybindings(g *gocui.Gui) error {
 		return err
 	}
 
-	if err := g.SetKeybinding("", gocui.KeyArrowRight, gocui.ModNone, nextQuoteInfo); err != nil {
+	if err := g.SetKeybinding("", gocui.KeyArrowRight, gocui.ModNone, nextQuote); err != nil {
 		return err
 	}
 
-	if err := g.SetKeybinding("main", gocui.KeyArrowRight, gocui.ModNone, nextQuote); err != nil {
-		return err
-	}
-
-	if err := g.SetKeybinding("", gocui.KeyArrowLeft, gocui.ModNone, prevQuoteInfo); err != nil {
-		return err
-	}
-
-	if err := g.SetKeybinding("main", gocui.KeyArrowLeft, gocui.ModNone, prevQuote); err != nil {
+	if err := g.SetKeybinding("", gocui.KeyArrowLeft, gocui.ModNone, prevQuote); err != nil {
 		return err
 	}
 
@@ -129,7 +145,7 @@ func layout(g *gocui.Gui) error {
 		v.Frame = true
 	}
 
-	if v, err := g.SetView("main", 0, 2, maxX-1, maxY-1); err != nil {
+	if v, err := g.SetView("main", 0, 3, maxX-1, maxY-1); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}

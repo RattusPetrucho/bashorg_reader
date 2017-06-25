@@ -2,11 +2,7 @@ package main
 
 import (
 	"errors"
-	// "fmt"
 	"strconv"
-
-	// парсиннг html
-	// "golang.org/x/net/html"
 
 	// get запрос
 	"net/http"
@@ -16,7 +12,6 @@ import (
 	"golang.org/x/text/transform"
 	"io/ioutil"
 	"strings"
-	// "os"
 )
 
 type quote_res struct {
@@ -24,8 +19,6 @@ type quote_res struct {
 	Quote string
 	Err   error
 }
-
-// var file *os.File
 
 var quote_limit = make(chan struct{}, 10)
 
@@ -114,58 +107,6 @@ func readQuote(num int, url string, quotes chan<- quote_res) {
 	qr.Err = errors.New("no citations")
 	quotes <- qr
 	return
-
-	// body := html.NewTokenizer(resp.Body)
-
-	// // В цикле пробегаем по всем токенам html
-	// for {
-	// 	// берём следующий токен и получаем его тип
-	// 	tt := body.Next()
-	// 	// Проверяем тип токена
-	// 	switch tt {
-	// 	case html.ErrorToken:
-	// 		qr.Err = errors.New("no citations")
-	// 		quotes <- qr
-	// 		return
-	// 	// Если это тэг
-	// 	case html.StartTagToken:
-	// 		tn, attr := body.TagName()
-	// 		// тэг div с атрибутом
-	// 		if string(tn) == "div" && attr {
-	// 			// атрибут class со значением text
-	// 			key, val, _ := body.TagAttr()
-	// 			if string(key) == "class" && string(val) == "text" {
-	// 				// то извлекаем цитату
-	// 				for {
-	// 					tt = body.Next()
-	// 					sr := strings.NewReader(string(body.Text()))
-
-	// 					// перекодируем цитату из cp1251 в utf-8
-	// 					tr := transform.NewReader(sr, charmap.Windows1251.NewDecoder())
-	// 					buf, err := ioutil.ReadAll(tr)
-
-	// 					if err != nil {
-	// 						qr.Err = err
-	// 						quotes <- qr
-	// 						return
-	// 					}
-
-	// 					qr.Quote += string(buf)
-
-	// 					tt = body.Next()
-
-	// 					tn, _ := body.TagName()
-	// 					if string(tn) == "br" {
-	// 						qr.Quote += "\n"
-	// 					} else {
-	// 						quotes <- qr
-	// 						return
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
 }
 
 func readBashorg(start, count int) (string, error) {
