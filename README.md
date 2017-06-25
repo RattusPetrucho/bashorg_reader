@@ -1,4 +1,4 @@
-Bashorg_reader
+# Bashorg_reader
 
 Чтение цитат по порядку с bash.im
 
