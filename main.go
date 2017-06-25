@@ -16,23 +16,24 @@ func init() {
 func main() {
 	var err error
 
-	g := gocui.NewGui()
-
-	if err := g.Init(); err != nil {
-		log.Panicln(err)
+	g, err := gocui.NewGui(gocui.OutputNormal)
+	if err != nil {
+		log.Fatal(err)
 	}
 	defer g.Close()
 
-	g.SetLayout(layout)
+	// g.SetLayout(layout)
+	g.SetManagerFunc(layout)
 	if err := keybindings(g); err != nil {
 		log.Panicln(err)
 	}
 	g.FgColor = gocui.ColorDefault
 	g.BgColor = gocui.ColorDefault
-	g.ShowCursor = false
+	// g.ShowCursor = false
+	g.Cursor = false
 
 	err = g.MainLoop()
-	if err != nil && err != gocui.Quit {
+	if err != nil && err != gocui.ErrQuit {
 		log.Panicln(err)
 	}
 }

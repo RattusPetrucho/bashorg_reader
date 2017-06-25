@@ -37,7 +37,7 @@ func nextQuoteInfo(g *gocui.Gui, v *gocui.View) error {
 
 	fmt.Fprintf(iv, "%s", yopt)
 
-	g.Flush()
+	// g.Flush()
 
 	return nil
 }
@@ -78,7 +78,7 @@ func prevQuoteInfo(g *gocui.Gui, v *gocui.View) error {
 
 	fmt.Fprintf(iv, "%s", yopt)
 
-	g.Flush()
+	// g.Flush()
 
 	return nil
 }
@@ -87,7 +87,7 @@ func prevQuoteInfo(g *gocui.Gui, v *gocui.View) error {
 func quit(g *gocui.Gui, v *gocui.View) error {
 	config.Cit += config.Cnt
 	saveConfig()
-	return gocui.Quit
+	return gocui.ErrQuit
 }
 
 func keybindings(g *gocui.Gui) error {
@@ -118,7 +118,7 @@ func layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
 	if v, err := g.SetView("info", 0, 0, maxX-1, 2); err != nil {
-		if err != gocui.ErrorUnkView {
+		if err != gocui.ErrUnknownView {
 			return err
 		}
 
@@ -130,7 +130,7 @@ func layout(g *gocui.Gui) error {
 	}
 
 	if v, err := g.SetView("main", 0, 2, maxX-1, maxY-1); err != nil {
-		if err != gocui.ErrorUnkView {
+		if err != gocui.ErrUnknownView {
 			return err
 		}
 
@@ -148,7 +148,7 @@ func layout(g *gocui.Gui) error {
 
 		v.Frame = true
 		v.Wrap = true
-		if err := g.SetCurrentView("main"); err != nil {
+		if _, err := g.SetCurrentView("main"); err != nil {
 			return err
 		}
 	}
