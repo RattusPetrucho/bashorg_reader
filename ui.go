@@ -133,12 +133,24 @@ func keybindings(g *gocui.Gui) error {
 func layout(g *gocui.Gui) error {
 	maxX, maxY := g.Size()
 
-	if v, err := g.SetView("info", 0, 0, maxX-1, 2); err != nil {
+	if v, err := g.SetView("info", 0, 0, (maxX/3)-1, 2); err != nil {
 		if err != gocui.ErrUnknownView {
 			return err
 		}
 
 		yopt := "yopt!!!|||"
+
+		fmt.Fprintf(v, "%s", yopt)
+
+		v.Frame = true
+	}
+
+	if v, err := g.SetView("help", (maxX / 3), 0, maxX-1, 2); err != nil {
+		if err != gocui.ErrUnknownView {
+			return err
+		}
+
+		yopt := "\t <- prev citations | -> next citations | F10 quit"
 
 		fmt.Fprintf(v, "%s", yopt)
 
