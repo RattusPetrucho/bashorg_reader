@@ -4,7 +4,7 @@
 
 ##Instalation
 
-Для установки необходим пакетный мэнэджер glide
+Для установки необходим пакетный менеджер glide
 Чтобы его установить:
 ```
 go get -u github.com/Masterminds/glide
