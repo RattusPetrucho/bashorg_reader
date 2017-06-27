@@ -4,13 +4,16 @@
 
 ##Instalation
 
+Для установки необходим пакетный мэнэджер glide
+Чтобы его установить:
+```
+go get -u github.com/Masterminds/glide
+```
+
 Execute:
 
 ```
-go get -u bitbucket.org/Rattus/bashorg_reader
+go get bitbucket.org/Rattus/bashorg_reader
+glide install
+go install
 ```
-
-##TODO
-
-* Сделать в UI подсказки по клавишам.
-* Добавить вендориг(glide?)

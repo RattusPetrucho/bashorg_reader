@@ -1,0 +1,7 @@
+package: bitbucket.org/Rattus/bashorg_reader
+import:
+- package: github.com/jroimartin/gocui
+- package: golang.org/x/text
+  subpackages:
+  - encoding/charmap
+  - transform

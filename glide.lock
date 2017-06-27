@@ -1,0 +1,18 @@
+hash: eb80c943ef0db833320705ec16ec2a5c1f1a7a23b3f4d8afd6d46a40891b8cbc
+updated: 2017-06-27T21:50:25.043789349+03:00
+imports:
+- name: github.com/jroimartin/gocui
+  version: 612b0b2987ec1a6af46d7008cef1efd4b3898346
+- name: github.com/mattn/go-runewidth
+  version: 97311d9f7767e3d6f422ea06661bc2c7a19e8a5d
+- name: github.com/nsf/termbox-go
+  version: 72800b73ab9a3c78df350738298b0361354772ff
+- name: golang.org/x/text
+  version: 6353ef0f924300eea566d3438817aa4d3374817e
+  subpackages:
+  - encoding
+  - encoding/charmap
+  - encoding/internal
+  - encoding/internal/identifier
+  - transform
+testImports: []

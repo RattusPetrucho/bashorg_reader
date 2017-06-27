@@ -8,10 +8,11 @@ import (
 	"net/http"
 
 	// Перевод из cp1251 в utf-8
-	"golang.org/x/text/encoding/charmap"
-	"golang.org/x/text/transform"
 	"io/ioutil"
 	"strings"
+
+	"golang.org/x/text/encoding/charmap"
+	"golang.org/x/text/transform"
 )
 
 type quote_res struct {
@@ -20,13 +21,14 @@ type quote_res struct {
 	Err   error
 }
 
-var quote_limit = make(chan struct{}, 10)
+// Семафор дл  ограничивающий кол-во запросов к башоргу 10ю
+var semaphore = make(chan struct{}, 10)
 
 // Читаем цитату по номеру num
 // и выбираем текст цитаты
 func readQuote(num int, url string, quotes chan<- quote_res) {
-	quote_limit <- struct{}{}
-	defer func() { <-quote_limit }()
+	semaphore <- struct{}{}
+	defer func() { <-semaphore }()
 
 	qr := quote_res{Num: num}
 
