@@ -13,7 +13,7 @@ go get -u github.com/Masterminds/glide
 Execute:
 
 ```
-go get bitbucket.org/Rattus/bashorg_reader
+go get github.com/RattusPetrucho/bashorg_reader
 glide install
 go install
 ```
