@@ -6,6 +6,7 @@ import (
 
 	// get запрос
 	"net/http"
+	"net/url"
 
 	// Перевод из cp1251 в utf-8
 	"io/ioutil"
@@ -21,12 +22,14 @@ type quote_res struct {
 	Err   error
 }
 
+var redirectAttemptedError = errors.New("redirect")
+
 // Семафор дл  ограничивающий кол-во запросов к башоргу 10ю
 var semaphore = make(chan struct{}, 10)
 
 // Читаем цитату по номеру num
 // и выбираем текст цитаты
-func readQuote(num int, url string, quotes chan<- quote_res) {
+func readQuote(num int, url_path string, client *http.Client, quotes chan<- quote_res) {
 	semaphore <- struct{}{}
 	defer func() { <-semaphore }()
 
@@ -34,9 +37,14 @@ func readQuote(num int, url string, quotes chan<- quote_res) {
 
 	// Читаем цитату по номеру num
 	// url := "http://bash.im/quote/" + fmt.Sprintf("%d", num)
-	resp, err := http.Get(url)
-
+	// resp, err := http.Get(url)
+	resp, err := client.Get(url_path)
 	if err != nil {
+		if urlErr, ok := err.(*url.Error); ok && urlErr.Err == redirectAttemptedError {
+			qr.Quote = "Данная цитата выбыла из игры..."
+			quotes <- qr
+			return
+		}
 		qr.Err = err
 		quotes <- qr
 		return
@@ -115,9 +123,14 @@ func readBashorg(start, count int) (string, error) {
 	var out_str string
 	quotes := make(chan quote_res, count)
 
+	client := &http.Client{}
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return redirectAttemptedError
+	}
+
 	for i := start; i < count+start; i++ {
 		url := "http://bash.im/quote/" + strconv.Itoa(i)
-		go readQuote(i, url, quotes)
+		go readQuote(i, url, client, quotes)
 	}
 
 	quotes_arr := make([]string, count)

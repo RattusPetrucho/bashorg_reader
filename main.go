@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/jroimartin/gocui"
 	"log"
+
+	"github.com/jroimartin/gocui"
 )
 
 func init() {
