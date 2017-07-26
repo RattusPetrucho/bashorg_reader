@@ -14,7 +14,7 @@ var config = new(configuration)
 
 // Сохранение конфигурации
 func saveConfig() {
-	file, err := os.Create(os.Getenv("HOME") + "/bashor_reader")
+	file, err := os.Create(os.Getenv("HOME") + "/.bashor_reader")
 	if err != nil {
 		panic(err)
 	}
@@ -33,9 +33,9 @@ func saveConfig() {
 func readConfig() (conf *configuration, err error) {
 	conf = new(configuration)
 
-	if _, err = os.Stat(os.Getenv("HOME") + "/bashor_reader"); err == nil {
+	if _, err = os.Stat(os.Getenv("HOME") + "/.bashor_reader"); err == nil {
 		var file *os.File
-		file, err = os.Open(os.Getenv("HOME") + "/bashor_reader")
+		file, err = os.Open(os.Getenv("HOME") + "/.bashor_reader")
 		if err != nil {
 			return
 		}
